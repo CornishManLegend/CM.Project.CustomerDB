@@ -1,0 +1,23 @@
+name: CustomerDB
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: setup-msbuild
+        uses: microsoft/setup-msbuild@v1.1
+
+      # create dacpac using MSBUILD executable
+      - name: create dacpac
+        run: msbuild CM.Project.CustomerDB/CM.Project.CustomerDB.sqlproj /p:Configuration=Release
+     
+     # Publish an artifact
+      - uses: actions/upload-artifact@v2
+        with:
+          name: DACPAC
+          path: ${{ github.workspace }}/CM.Project.CustomerDB.sqlproj//bin/Release/
